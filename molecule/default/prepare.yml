@@ -1,0 +1,24 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: Install httpd
+      yum:
+        name:
+          - httpd
+        state: present
+
+    - name: Create httpd dir
+      file:
+        path: /httpdir
+        state: directory
+        owner: apache
+        group: apache
+        mode: 0644
+
+    - name: Add buildtools yum repository
+      template:
+        src: "{{ yum_buildtools_repo }}"
+        dest: /etc/yum.repos.d/buildtools.repo

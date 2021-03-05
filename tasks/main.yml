@@ -1,1 +1,107 @@
 # Defaults tasks for role fedmsg
+---
+- name: Install fedmsg packages packages
+  yum:
+    name:
+      - python3-fedmsg
+    state: present
+  
+- name: Python3 workaround
+  pip:
+    name:
+      - pygments
+    executable: /usr/bin/pip3.6
+
+- name: Ensure group "fedmsg" exists
+  group:
+    name: fedmsg
+    state: present
+  
+- name: Ensure user "fedmsg" exists
+  user:
+    name: fedmsg
+    comment: fedmsg
+    group: fedmsg
+  
+- name: Ensure /etc/fedmsg.d/ folder exists
+  file:
+    path: /etc/fedmsg.d/
+    state: directory
+    owner: root
+    group: fedmsg
+    mode: 0755
+  
+- name: setup basic /etc/fedmsg.d/ contents for internal hosts
+  template:
+    src: "base/{{ item }}.j2"
+    dest: "/etc/fedmsg.d/{{ item }}"
+    owner: root
+    group: fedmsg
+    mode: 0644
+  with_items:
+    - ssl.py
+    - endpoints.py
+    - endpoints-mbs-backend.py
+    - relay.py
+    - logging.py
+    - base.py
+  notify:
+    - Reload apache
+    - Restart fedmsg-hub
+  
+- name: Enable the websocket server if we should
+  template:
+    src: websockets.py.j2
+    dest: /etc/fedmsg.d/websockets.py
+  when: fedmsg_enable_websocket_server
+  notify:
+    - Restart fedmsg-hub
+  
+- name: Disable the websocket server if we should..
+  file:
+    path: /etc/fedmsg.d/websockets.py
+    state: absent
+  when: not fedmsg_enable_websocket_server
+  notify:
+    - Restart fedmsg-hub
+
+- name: Set fedmsg ownership on /var/run/fedmsg
+  file:
+    dest: /var/run/
+    mode: 2775
+    owner: fedmsg
+    group: fedmsg
+    state: directory
+  
+- name: Check if /var/run/monitoring-fedmsg-hub.socket file exists
+  stat:
+    path: /var/run/monitoring-fedmsg-hub.socket
+  register: output
+  
+- name: Create systemd config directory
+  file:
+    path: /etc/systemd/system/fedmsg-hub.service.d
+    state: directory
+  notify:
+    - Reload systemd
+
+- name: Install systemd config file
+  template:
+    src: fedmsg-hub-systemd.conf.j2
+    dest: /etc/systemd/system/fedmsg-hub.service.d/systemd.conf
+  notify:
+    - Reload systemd
+    - Restart fedmsg-hub
+
+- name: Create fedmsg-hub systemd file
+  template:
+    src: fedmsg-hub.service.j2
+    dest: /usr/lib/systemd/system/fedmsg-hub.service
+  
+- name: Fedmsg-hub service
+  systemd:
+    name: fedmsg-hub
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  

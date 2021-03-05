@@ -1,0 +1,36 @@
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: libvirt
+    type: libvirt
+platforms:
+  - name: instance
+    box: centos/8
+    memory: 512
+    cpus: 1
+    instance_raw_config_args:
+      - vagrant.plugins = ["vagrant-libvirt"]
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
+      synced_folder: false
+    interfaces:
+      - network_name: forwarded_port
+        guest: 80
+        host: 8080
+    provision: no
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        psql_hba_conf_file: ${MOLECULE_PROJECT_DIRECTORY}/molecule/files/pg_hba.conf
+        mbs_mq_cert: ${MOLECULE_PROJECT_DIRECTORY}/molecule/files/cert.pem
+        mbs_mq_key: ${MOLECULE_PROJECT_DIRECTORY}/molecule/files/key.pem
+        mbs_mq_ca: ${MOLECULE_PROJECT_DIRECTORY}/molecule/files/ca.pem
+        mbs_default_modules_dir: ${MOLECULE_PROJECT_DIRECTORY}/molecule/files/default-modules
+        yum_buildtools_repo: ${MOLECULE_PROJECT_DIRECTORY}/molecule/files/buildtools.repo
+verifier:
+  name: ansible

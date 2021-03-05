@@ -1,0 +1,56 @@
+---
+# This is an example playbook to execute Ansible tests.
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Collect facts about system services
+      service_facts:
+
+    - name: Stat MBS config ile
+      stat:
+        path: /etc/module-build-service/config.py
+      register: mbs_config_stat
+
+    - name: fedmsg-hub service assert
+      assert:
+        that:
+          - ansible_facts.services['fedmsg-hub.service']['state'] == 'running'
+
+    - name: mbs workers service assert
+      assert:
+        that:
+          - ansible_facts.services['mbs-worker@0.service']['state'] == 'running'
+          - ansible_facts.services['mbs-worker@1.service']['state'] == 'running'
+          - ansible_facts.services['mbs-worker@2.service']['state'] == 'running'
+
+    - name: mbs-poller service assert
+      assert:
+        that:
+          - ansible_facts.services['mbs-poller.service']['state'] == 'running'
+
+    - name: mbs config file assert
+      assert:
+        that:
+          - mbs_config_stat.stat.exists
+          - mbs_config_stat.stat.mode|string == '0644'
+          - mbs_config_stat.stat.readable
+
+    - name: mbs service assert
+      uri:
+        url: http://localhost/module-build-service/1/module-builds/
+        method: GET
+        status_code: 200
+
+    - set_fact:
+        post_body:
+          scmurl: https://src.fedoraproject.org/modules/foo
+          branch: master
+    - name: mbs service post auth failed assert
+      uri:
+        url: http://localhost/module-build-service/1/module-builds/
+        body: "{{ post_body | to_json }}"
+        headers:
+          Content-Type: "application/json"
+        method: POST
+        status_code: 403

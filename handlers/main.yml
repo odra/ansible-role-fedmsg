@@ -1,1 +1,21 @@
 # Defaults handlers for role fedmsg
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Restart apache
+  service:
+    name: httpd
+    state: restarted
+    enabled: true
+
+- name: Reload apache
+  service:
+    name: httpd
+    state: reloaded
+
+- name: Restart fedmsg-hub
+  service:
+    name: fedmsg-hub
+    state: restarted
+    enabled: true

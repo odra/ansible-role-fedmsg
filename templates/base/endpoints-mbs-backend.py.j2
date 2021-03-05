@@ -1,0 +1,12 @@
+suffix  = '{{ fedmsg_mbs_suffix }}'
+vpn_suffix = '{{ fedmsg_vpn_suffix }}'
+
+
+config = dict(
+    endpoints={
+        "mbs.mbs-backend01": [
+            "{{ fedmsg_mbs_endpoint_format }}" % (suffix, i)
+            for i in range({{ fedmsg_mbs_endpoint_range }})
+        ],
+    },
+)

@@ -1,1 +1,35 @@
 # Defaults variables for role fedmsg
+fedmsg_hub_bin: /usr/bin/fedmsg-hub
+fedmsg_env: prod
+fedmsg_log_level: INFO
+fedmsg_hub_memory_limit_mb: 0
+fedmsg_hub_auto_restart: false
+fedmsg_enable_websocket_server: false
+fedmsg_websocket_port: 9919
+fedmsg_active: false
+fedmsg_cert_prefix: "centos"
+fedmsg_status_directory: /var/run/fedmsg/status
+fedmsg_datagrepper_url: https://apps.fedoraproject.org/datagrepper/raw
+fedmsg_mbs_suffix: centos.org
+fedmsg_vpn_suffix: vpn.fedoraproject.org
+fedmsg_mbs_endpoint_format: tcp://mbs-backend01.%s:30%0.2i
+fedmsg_mbs_endpoint_range: 8
+fedmsg_endpoint_format: tcp://value01.%s:3000
+fedmsg_env_suffix: ''
+fedmsg_relay_outbound_endpoint_format: tcp://busgateway01.%s:3999
+fedmsg_relay_inbound_endpoint_format: tcp://busgateway01.%s:9941
+fedmsg_relay_inbound_vpn_endpoint_format: tcp://busgateway01.vpn.fedoraproject.org:3998
+fedmsg_sign_messages: true
+fedmsg_validate_signatures: true
+fedmsg_ssl_dir: /etc/pki/fedmsg
+fedmsg_ca_location: https://fedoraproject.org/fedmsg/ca.crt
+fedmsg_crl_location: https://fedoraproject.org/fedmsg/crl.pem
+fedmsg_crl_cache_path: /var/run/fedmsg/crl.pem
+fedmsg_crl_cache_expire: 86400
+fedmsg_certs: {}
+fedmsg_error_recipients: []
+fedmsg_mail_host: bastion.iad2.fedoraproject.org
+fedmsg_post_init_sleep: 1
+fedmsg_ssl_backends: [
+  # ["backend_name", "backend_host"],
+]

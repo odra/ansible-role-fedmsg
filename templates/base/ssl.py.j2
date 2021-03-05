@@ -1,0 +1,19 @@
+config = dict(
+    sign_messages={{ fedmsg_sign_messages | bool }},
+    validate_signatures={{fedmsg_validate_signatures | bool}},
+    ssldir="{{ fedmsg_ssl_dir }}",
+
+    ca_cert_location="{{ fedmsg_ca_location }}",
+    crl_location="{{ fedmsg_crl_location }}",
+    crl_cache="{{ fedmsg_crl_cache_path }}",
+    crl_cache_expiry={{ fedmsg_crl_cache_expire }},
+
+    certnames=dict([
+    # This is the set of certs for this host, dynamically generated from the
+    # ``fedmsg_certs`` host vars
+    {% for cert in fedmsg_certs %}
+    ("{{cert.get('alias', cert['service'])}}.{{inventory_hostname_short}}", "{{cert['service']}}-{{fedmsg_fqdn | default(inventory_hostname)}}"),
+    {% endfor %}
+] + {{ fedmsg_ssl_backends }}),
+)
+
