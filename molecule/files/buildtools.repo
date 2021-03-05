@@ -1,0 +1,5 @@
+[buildtools]
+name=buildtools
+baseurl=http://buildlogs.centos.org/centos/8/infra/x86_64/buildtools-common/
+enabled=1
+gpgcheck=0
