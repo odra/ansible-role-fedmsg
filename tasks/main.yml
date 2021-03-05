@@ -4,6 +4,9 @@
   yum:
     name:
       - python3-fedmsg
+      - python3-psutil
+      - python3-moksha-hub
+      - python3-click
     state: present
   
 - name: Python3 workaround
@@ -64,19 +67,6 @@
   when: not fedmsg_enable_websocket_server
   notify:
     - Restart fedmsg-hub
-
-- name: Set fedmsg ownership on /var/run/fedmsg
-  file:
-    dest: /var/run/
-    mode: 2775
-    owner: fedmsg
-    group: fedmsg
-    state: directory
-  
-- name: Check if /var/run/monitoring-fedmsg-hub.socket file exists
-  stat:
-    path: /var/run/monitoring-fedmsg-hub.socket
-  register: output
   
 - name: Create systemd config directory
   file:
