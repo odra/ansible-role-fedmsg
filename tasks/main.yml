@@ -7,13 +7,8 @@
       - python3-psutil
       - python3-moksha-hub
       - python3-click
+      - python3-pygments
     state: present
-  
-- name: Python3 workaround
-  pip:
-    name:
-      - pygments
-    executable: /usr/bin/pip3.6
 
 - name: Ensure group "fedmsg" exists
   group:
@@ -54,15 +49,15 @@
   
 - name: Enable the websocket server if we should
   template:
-    src: websockets.py.j2
-    dest: /etc/fedmsg.d/websockets.py
+    src: websocket.py.j2
+    dest: /etc/fedmsg.d/websocket.py
   when: fedmsg_enable_websocket_server
   notify:
     - Restart fedmsg-hub
   
 - name: Disable the websocket server if we should..
   file:
-    path: /etc/fedmsg.d/websockets.py
+    path: /etc/fedmsg.d/websocket.py
     state: absent
   when: not fedmsg_enable_websocket_server
   notify:
