@@ -39,6 +39,7 @@
   with_items:
     - logging.py
     - base.py
+    - endpoints.py
   notify:
     - Reload apache
     - Restart fedmsg-hub
@@ -78,11 +79,6 @@
   template:
     src: fedmsg-hub.service.j2
     dest: /usr/lib/systemd/system/fedmsg-hub.service
-  
-- name: Fedmsg-hub service
-  systemd:
-    name: fedmsg-hub
-    state: started
-    enabled: yes
-    daemon_reload: yes
-  
+  notify:
+    - Reload systemd
+    - Restart fedmsg-hub

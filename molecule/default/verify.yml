@@ -3,10 +3,12 @@
 - name: Verify
   hosts: all
   gather_facts: false
+  become: true
+  become_user: root
   tasks:
     - name: Collect facts about system services
-      service_facts:
-
+      service_facts: {}
+    
     - name: fedmsg-hub service assert
       assert:
         that:

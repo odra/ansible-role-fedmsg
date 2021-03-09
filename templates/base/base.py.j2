@@ -8,7 +8,7 @@ config = dict(
     # actively connect to them.  If this flag is set to True, then the service
     # will actively connect out to a fedmsg-relay to have its messages forwarded
     # on.
-    active={{ fedmsg_active | bool }},
+    active=True,
 
     {% if fedmsg_cert_prefix is defined %}
     # Most fedmsg enabled services dynamically guess their cert_prefix by

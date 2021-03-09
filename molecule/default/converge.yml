@@ -5,6 +5,9 @@
   become_user: root
   tasks:
     # run role
-    - name: "Include ansible-role-fedmsg"
-      include_role:
-        name: "ansible-role-fedmsg"
+    - block:
+        - name: "Include ansible-role-fedmsg"
+          include_role:
+            name: "ansible-role-fedmsg"
+      rescue:
+        - debug: msg=haoiu
