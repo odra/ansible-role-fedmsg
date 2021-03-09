@@ -1,4 +1,5 @@
 # Defaults variables for role fedmsg
+fedmsg_web_root_path: /fedmsg
 fedmsg_hub_bin: /usr/bin/fedmsg-hub
 fedmsg_env: prod
 fedmsg_log_level: INFO

@@ -37,10 +37,6 @@
     group: fedmsg
     mode: 0644
   with_items:
-    - ssl.py
-    - endpoints.py
-    - endpoints-mbs-backend.py
-    - relay.py
     - logging.py
     - base.py
   notify:
